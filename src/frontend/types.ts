@@ -3,39 +3,16 @@ export interface IUser {
     name: string
 }
 export interface IScore {
-    userId: number
+    user_id: number
     score: number
-    timeSpent: number
+    time_spent: number
 }
 export interface IQuestion {
-    questionId: number
+    question_id: number
     question: string
-    answerIndex: number
+    answer_index: number
     choices: string[],
     hint: string
 }
 
-export type UserState = {
-    users: IUser[]
-}
-
-export type UserAction = {
-    type: string
-    user: IUser
-}
-
-export type ScoreState = {
-    users: IUser[]
-}
-
-export type ScoreAction = {
-    type: string
-    score: number
-}
-
-export type QuestionsAction = {
-    type: string
-    questions: IQuestion[]
-}
-
-export type DispatchType = (args: ScoreAction) => ScoreAction
+export type QuestionsType = IQuestion[]

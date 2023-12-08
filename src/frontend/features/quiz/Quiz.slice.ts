@@ -1,22 +1,24 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import type {RootState} from '../../app/store'
 import Api from "../../services/api.ts";
+import {IQuestion, QuestionsType} from "../../types.ts";
 
 // Define a type for the slice state
 export interface QuizState {
-    questions: string[],
+    questions: IQuestion[],
     isLoading: boolean,
-    error: string | null,
+    error: string | null | undefined,
 }
 
-export const fetchQuiz = createAsyncThunk(
-    "events/fetchQuiz",
-    async (url) => {
-        return await Api.getData(url);
+export type Url = string
+export const fetchQuiz = createAsyncThunk<
+    QuestionsType,
+    Url
+>("events/fetchQuiz",async (url) => {
+        return await Api.getData(url) as QuestionsType;
     }
 );
 
-// Define the initial state using that type
 const initialState: QuizState = {
     questions: [],
     isLoading: false,
@@ -50,6 +52,6 @@ export const quizSlice = createSlice({
 })
 
 
-export const {quizSet} = quizSlice.actions
+// export const {quizSet} = quizSlice.actions
 export const selectQuiz = (state: RootState) => state.quiz
 export default quizSlice.reducer
