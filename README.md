@@ -1,5 +1,8 @@
 # Ancient Rome Quiz application
 The purpose of the application is for users to test their knowledge about Ancient Rome.
+#### Start page
+![start](app1.png)
+
 
 This project was bootstrapped with [Vite](#Vite)
 
@@ -15,6 +18,14 @@ Stack:
    * save and display the sum of the time it took the user to answer his correct answers. 
    * Responsive Design - compatibility across different browsers.
 
+#### Question
+![question](app2.png)
+#### Question with hint
+![question](app3.png)
+#### Question with correct answer displayed
+![hint](app4.png)
+#### Quiz summary
+![summary](app5.png)
 
 2. ##### Backend: NodeJs
 
