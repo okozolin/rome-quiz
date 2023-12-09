@@ -1,4 +1,5 @@
 import React from 'react';
+import {CompletedText} from "./Quiz.styles.ts";
 
 interface QuizResultProps {
     score: number;
@@ -9,7 +10,9 @@ const QuizResult: React.FC<QuizResultProps> = ({ score, totalQuestions }) => {
     return (
         <div>
             <h2>Quiz Completed!</h2>
-            <p>{`You scored ${score} out of ${totalQuestions}`}</p>
+            <CompletedText>
+                {`You scored ${score} out of ${totalQuestions}`}
+            </CompletedText>
         </div>
     );
 };

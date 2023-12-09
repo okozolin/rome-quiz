@@ -1,5 +1,6 @@
 export const platformColors = {
     lightPink:  '#F59794',
+    pink:       '#c931e3',
     lila:       '#ADABFF',
     lightViolet: '#7289da',
     violet:     '#5f73bc',
@@ -9,5 +10,6 @@ export const platformColors = {
     darkGrey:   '#333',
     lightGrey:  '#DADADF4A',
     error:      '#D0021B',
-    white:      '#fff'
+    white:      '#fff',
+    warmBlack:  '#332828'
 }

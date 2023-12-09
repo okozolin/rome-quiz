@@ -1,7 +1,7 @@
 import './App.css'
 import store from './store.ts'
 import {Provider} from "react-redux";
-import QuizComponent from "../features/quiz/Quiz.component.tsx";
+import Quiz from "../features/quiz/Quiz.component.tsx";
 import {AppContainer, Header, MyLogo} from "./App.styles.ts";
 import {MdFace} from "react-icons/md";
 
@@ -13,11 +13,11 @@ function App() {
         <AppContainer>
           <Header>
             <MyLogo>
-              <MdFace color={"lightPink"} />
+              <MdFace />
                 oritkozolin 2023
             </MyLogo>
           </Header>
-          <QuizComponent/>
+          <Quiz/>
         </AppContainer>
       </Provider>
     </>

@@ -11,16 +11,20 @@ interface QuizQuestionProps {
     question: IQuestion;
     qIndex: number;
     onQuestionAnswered: (index: number) => void;
+    isTimeout: boolean
 }
 
 const QuizQuestion: React.FC<QuizQuestionProps> = ({
                                                        question,
                                                        qIndex,
                                                        onQuestionAnswered,
-
-
+                                                       isTimeout
                                                    }) => {
     const [answered, setAnswered] = useState(false);
+
+    useEffect(() => {
+        setAnswered(false)
+    }, [qIndex]);
 
     const handleAnswer = (index: number) => {
         onQuestionAnswered(index);
@@ -31,22 +35,21 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
         <TextWrapper>
             <QuestionText>
                 <QuestionNumber>{qIndex}.</QuestionNumber>
-                <p>{question.question}</p>
+                <div>{question.question}</div>
             </QuestionText>
             <AnswersContainer>
                 {question.choices.map((choice, index) =>
                     <AnswerOption
                         key={index}
                         onClick={() => handleAnswer(index)}
-                        $isCorrect={index === question.answer_index}
-                        $isHighlighted={answered && (index === question.answer_index)}
                         $numAnswers={question.choices?.length}
+                        $isCorrect={index === question.answer_index}
+                        $answered={answered || isTimeout}
                     >
                         {choice}
                     </AnswerOption>
                 )}
             </AnswersContainer>
-            {/*{answered && <p>{question.hint}</p>}*/}
         </TextWrapper>
     );
 };
