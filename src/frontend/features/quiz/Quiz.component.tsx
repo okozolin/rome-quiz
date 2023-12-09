@@ -7,7 +7,6 @@ import {
 import {getQuizQuestions} from './Quiz.thunks.ts';
 import {selectQuiz} from "./Quiz.slice.ts";
 
-import Button from "../../components/Button/Button.component.tsx";
 import QuizQuestion from "./QuizQuestion.component.tsx";
 import QuizResult from "./QuizResult.component.tsx";
 import {
@@ -20,8 +19,8 @@ import {
 } from "./Quiz.styles.ts";
 import {IQuestion} from "../../types.ts";
 import QuizCorrectAnswer from "./QuizCorrectAnswer.component.tsx";
-import TimerIndicator from "../timer/TimerIndicator.component.tsx";
 import HintIndicator from "../hint/HintIndicator.component.tsx";
+import QuizStart from "./QuizStart.component.tsx";
 
 
 const Quiz: React.FC = () => {
@@ -31,13 +30,22 @@ const Quiz: React.FC = () => {
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timer, setTimer] = useState(QUESTION_TIMEOUT); // Initial timer value 20 seconds
-
+    const [totalTimeForCorrectAnswers, setTotalTimeForCorrectAnswers] = useState(0);
     const [quizStarted, setQuizStarted] = useState(false);
     const [score, setScore] = useState(0);
 
     const totalQuestions: number = questions?.length;
     const currentQuestion: IQuestion = questions[currentQuestionIndex]
 
+    const nextQuestion = () => {
+        setCurrentQuestionIndex(prev => prev + 1);
+        if (currentQuestionIndex === totalQuestions - 1) {
+            setTimer(0); // Reset timer for the next question
+        }
+        else {
+            setTimer(QUESTION_TIMEOUT); // Reset timer for the next question
+        }
+    }
     useEffect(() => {
         dispatch(getQuizQuestions());
     }, [dispatch]);
@@ -49,19 +57,15 @@ const Quiz: React.FC = () => {
                     setTimer(prevTimer => prevTimer - 1);
                 } else {
                     clearInterval(interval); // Clear interval to stop decrementing timer
-                    // Display correct answer for an additional 3 seconds
-                    // setQuestionsAnswered(currentQuestionIndex + 1);
-
                     if (currentQuestionIndex < totalQuestions) {
                         setTimeout(() => {
-                            setCurrentQuestionIndex(prev => prev + 1);
-                            setTimer(QUESTION_TIMEOUT); // Reset timer for the next question
-                        }, 3000);
+                            nextQuestion()
+                        }, 1000);
                     } else {
                         setQuizStarted(false); //quiz ended
                     }
                 }
-            }, 100);
+            }, 1000);
 
             // Clean up timer on component unmount or when question changes
             return () => clearInterval(interval);
@@ -73,17 +77,14 @@ const Quiz: React.FC = () => {
         setQuizStarted(true);
     };
 
-
     const handleQuestionAnswered = (selectedAnswerIndex: number) => {
         if (selectedAnswerIndex === currentQuestion.answer_index) {
+            const timeTaken = QUESTION_TIMEOUT - timer;
+            setTotalTimeForCorrectAnswers(prevTime => prevTime + timeTaken);
             setScore(score + 1);
         }
-        // setQuestionsAnswered(currentQuestionIndex + 1);
-        // console.log("inside handle questionsAnswered:", questionsAnswered)
-        // Move to the next question or show the result
         if (currentQuestionIndex < totalQuestions) {
-            setCurrentQuestionIndex(prev => prev + 1);
-            setTimer(QUESTION_TIMEOUT);
+            nextQuestion()
         } else {
             setQuizStarted(false);
         }
@@ -93,7 +94,7 @@ const Quiz: React.FC = () => {
     return (
         <QuizContainer>
             {!quizStarted && currentQuestionIndex !== totalQuestions &&
-                <Button onClick={handleStartQuiz}>Start Quiz</Button>
+                <QuizStart handleStartQuiz={handleStartQuiz} />
             }
             {quizStarted && currentQuestionIndex < totalQuestions && (
                 <QuestionContainer>
@@ -102,14 +103,13 @@ const Quiz: React.FC = () => {
                         qIndex={currentQuestionIndex + 1}
                         onQuestionAnswered={handleQuestionAnswered}
                         isTimeout={timer === 0}
+                        timer={timer}
                     />
                     {timer <= HINT_TIMEOUT &&
                         <HintIndicator
                             hint={currentQuestion.hint}
                         />
                     }
-
-                    <TimerIndicator timer={timer}/>
                     {timer === 0 && (
                         <QuizCorrectAnswer
                             currentQuestion={currentQuestion}
@@ -117,8 +117,11 @@ const Quiz: React.FC = () => {
                     )}
                 </QuestionContainer>
             )}
-            {!quizStarted && currentQuestionIndex === totalQuestions && (
-                <QuizResult score={score} totalQuestions={totalQuestions}/>
+            {!quizStarted && currentQuestionIndex>0 && totalQuestions > 0 && (
+                <>
+                    <QuizResult score={score} totalQuestions={totalQuestions}/>
+                    <p>It took you {totalTimeForCorrectAnswers} seconds to answer correctly </p>
+                </>
             )}
         </QuizContainer>
     );

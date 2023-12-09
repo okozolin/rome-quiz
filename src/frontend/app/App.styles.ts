@@ -25,6 +25,6 @@ export const Header = styled.div`
   text-align: center;
   font-weight: 600;
   line-height: 1.1;
-  font-size: 3vw;
+  font-size: calc(1vw + 1rem);
 `
 

@@ -7,18 +7,21 @@ import {
     TextWrapper
 } from "./Quiz.styles.ts";
 import {IQuestion} from "../../types.ts";
+import TimerIndicator from "../timer/TimerIndicator.component.tsx";
 interface QuizQuestionProps {
     question: IQuestion;
     qIndex: number;
     onQuestionAnswered: (index: number) => void;
     isTimeout: boolean
+    timer: number
 }
 
 const QuizQuestion: React.FC<QuizQuestionProps> = ({
                                                        question,
                                                        qIndex,
                                                        onQuestionAnswered,
-                                                       isTimeout
+                                                       isTimeout,
+                                                       timer
                                                    }) => {
     const [answered, setAnswered] = useState(false);
 
@@ -33,10 +36,11 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
     return (
         <TextWrapper>
-            <QuestionText>
+            <div>
                 <QuestionNumber>{qIndex}.</QuestionNumber>
-                <div>{question.question}</div>
-            </QuestionText>
+                <TimerIndicator timer={timer}/>
+                <QuestionText>{question.question}</QuestionText>
+            </div>
             <AnswersContainer>
                 {question.choices.map((choice, index) =>
                     <AnswerOption
@@ -45,6 +49,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
                         $numAnswers={question.choices?.length}
                         $isCorrect={index === question.answer_index}
                         $answered={answered || isTimeout}
+                        disabled={isTimeout}
                     >
                         {choice}
                     </AnswerOption>
