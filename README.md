@@ -1,13 +1,25 @@
 # Ancient Rome Quiz application
 The purpose of the application is for users to test their knowledge about Ancient Rome.
-#### Start page
+
+### Game instructions
+1. Press the 'start' button to begin the game
+2. Choose the answer you desire, 
+3. After that the game will proceed automatically to the next question
+4. Note, that upon timeout after the correct answer is presented, you cannot choose any answer :-)
+5. When game is finished, you will see your score and time it took for you to answer correctly
+6. To play again simply refresh your page
+
+#### Start page on wide screen
 ![start](app1.png)
 
+1. [Tech Stack](#stack)
+2. [Getting Started](#run)
+3. [Learn more](#Vite)
 
 This project was bootstrapped with [Vite](#Vite)
 
-Stack:
-1. ##### Frontend: React
+## <a id="stack"></a> Tech Stack:
+1. ##### Frontend: React, Styled Components, Redux toolkit
 
    * The user interface should include a "Start Quiz" button that triggers the quiz.
    * Once the quiz is started, the user should see a series of 5 multiple-choice questions about ancient Rome, fetched from the backend, or generated random in mocks, each with an accompanying hint.
@@ -18,7 +30,7 @@ Stack:
    * save and display the sum of the time it took the user to answer his correct answers. 
    * Responsive Design - compatibility across different browsers.
 
-#### Question
+#### Start page on smaller screen (responsive design)
 ![question](app2.png)
 #### Question with hint
 ![question](app3.png)
@@ -27,14 +39,30 @@ Stack:
 #### Quiz summary
 ![summary](app5.png)
 
-2. ##### Backend: NodeJs
+2. ##### Backend: Express NodeJs
 
    * It should provide a RESTful API that serves a random set of 5 quiz questions upon request.
    * The backend should not collect or store any user-specific data.
 
 
+## <a id="run"></a> Getting Started
+1. Clone or download (from this page). 
+   * To clone, write at you local machine command line
 
-## <a id="Vite"></a> React + TypeScript + Vite 
+   ### `git clone https://github.com/okozolin/rome-quiz.`git`
+
+2. After the project is copied,in the project directory, you can run: 
+   * install all the dependencies
+   ### `npm install`
+3. Run server
+   ### `npm run node_dev`
+4. Run the client
+   ### `npm run dev`
+
+
+## <a id="Vite"></a> Learn More
+
+### React + TypeScript + Vite 
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
