@@ -1,37 +1,37 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {RootState} from '../../app/store'
-import Api from "../../services/api.ts";
-import {IQuestion, QuestionsType} from "../../types.ts";
+import {IQuestion} from "../../types.ts";
+import {fetchQuiz, publishResult} from "./Quiz.thunks.ts";
 
 // Define a type for the slice state
 export interface QuizState {
     questions: IQuestion[],
     isLoading: boolean,
     error: string | null | undefined,
+    score: number,
+    totalTimeForCorrectAnswers: number,
+    resultPublished: boolean,
 }
-
-export type Url = string
-export const fetchQuiz = createAsyncThunk<
-    QuestionsType,
-    Url
->("events/fetchQuiz",async (url) => {
-        return await Api.getData(url) as QuestionsType;
-    }
-);
 
 const initialState: QuizState = {
     questions: [],
     isLoading: false,
     error: null,
+    score: 0,
+    totalTimeForCorrectAnswers: 0,
+    resultPublished: false,
 }
 
 export const quizSlice = createSlice({
     name: 'quiz',
     initialState,
     reducers: {
-        // quizSet: (state, action: PayloadAction<string[]>) => {
-        //     state.questions = action.payload
-        // }
+        scoreSet: (state, action: PayloadAction<number>) => {
+            state.score += action.payload
+        },
+        totalTimeForCorrectAnswersSet: (state, action: PayloadAction<number>) => {
+            state.totalTimeForCorrectAnswers += action.payload
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchQuiz.pending, (state) => {
@@ -48,10 +48,20 @@ export const quizSlice = createSlice({
             // state.status = "failed";
             state.error = action.error.message;
         });
+
+        builder.addCase(publishResult.pending, (state) => {
+            state.resultPublished = false;
+        });
+        builder.addCase(publishResult.fulfilled, (state) => {
+            state.resultPublished = true;
+        });
+        // builder.addCase(publishResult.rejected, (state) => {
+        //     // Handle rejection if needed
+        // });
     },
 })
 
 
-// export const {quizSet} = quizSlice.actions
+export const { scoreSet, totalTimeForCorrectAnswersSet } = quizSlice.actions;
 export const selectQuiz = (state: RootState) => state.quiz
 export default quizSlice.reducer

@@ -4,8 +4,8 @@ import {
     useAppSelector,
     useAppDispatch
 } from '../../app/hooks.ts';
-import {getQuizQuestions} from './Quiz.thunks.ts';
-import {selectQuiz} from "./Quiz.slice.ts";
+import {getQuizQuestions, publishQuizResult} from './Quiz.thunks.ts';
+import {scoreSet, selectQuiz, totalTimeForCorrectAnswersSet} from "./Quiz.slice.ts";
 
 import QuizQuestion from "./QuizQuestion.component.tsx";
 import QuizResult from "./QuizResult.component.tsx";
@@ -25,14 +25,11 @@ import QuizStart from "./QuizStart.component.tsx";
 
 const Quiz: React.FC = () => {
     const dispatch = useAppDispatch();
-    // const {questions, isLoading, error} = useAppSelector(selectQuiz);
-    const {questions} = useAppSelector(selectQuiz);
+    const {questions, score, totalTimeForCorrectAnswers} = useAppSelector(selectQuiz);
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timer, setTimer] = useState(QUESTION_TIMEOUT); // Initial timer value 20 seconds
-    const [totalTimeForCorrectAnswers, setTotalTimeForCorrectAnswers] = useState(0);
     const [quizStarted, setQuizStarted] = useState(false);
-    const [score, setScore] = useState(0);
 
     const totalQuestions: number = questions?.length;
     const currentQuestion: IQuestion = questions[currentQuestionIndex]
@@ -62,6 +59,7 @@ const Quiz: React.FC = () => {
                             nextQuestion()
                         }, 1000);
                     } else {
+                        dispatch(publishQuizResult());
                         setQuizStarted(false); //quiz ended
                     }
                 }
@@ -80,12 +78,13 @@ const Quiz: React.FC = () => {
     const handleQuestionAnswered = (selectedAnswerIndex: number) => {
         if (selectedAnswerIndex === currentQuestion.answer_index) {
             const timeTaken = QUESTION_TIMEOUT - timer;
-            setTotalTimeForCorrectAnswers(prevTime => prevTime + timeTaken);
-            setScore(score + 1);
+            dispatch(scoreSet(1)); // Increment score by 1 for correct answer
+            dispatch(totalTimeForCorrectAnswersSet(timeTaken))
         }
         if (currentQuestionIndex < totalQuestions) {
             nextQuestion()
         } else {
+            dispatch(publishQuizResult());
             setQuizStarted(false);
         }
     };
